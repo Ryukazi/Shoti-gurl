@@ -4,7 +4,7 @@ const usernames = [
   "pinaybeautys", "ulzzangclub", "girl_indonesia0", "kripaverse",
   "rina55544", "beautifulgirlcollections", "yourmommyy__",
   "_sophiya1", "svn9o.__.ww", "hninphyusin2004",
-  "sune_.0", "hvcqi", "mama_diorr", "allesandraniebres"
+  "sune_.0", "hvcqi", "mama_diorr", "allesandraniebres","amethystyaoki"
 ];
 
 // Shuffle helper
