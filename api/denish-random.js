@@ -1,10 +1,11 @@
 import axios from "axios";
 
 const usernames = [
-  "pinaybeautys", "ulzzangclub", "girl_indonesia0", "kripaverse",
-  "rina55544", "beautifulgirlcollections", "yourmommyy__",
-  "_sophiya1", "svn9o.__.ww", "hninphyusin2004",
-  "sune_.0", "hvcqi", "mama_diorr", "allesandraniebres","amethystyaoki"
+  "vix.max", "nepalibaddies2", "cewekcantikindo", "kripaverse",
+  "rina55544", "nepali.modelshub7", "yourmommyy__",
+  "mikxu_grgx", "svn9o.__.ww", "hninphyusin2004",
+  "sune_.0", "hvcqi", "mama_diorr", "allesandraniebres","amethystyaoki",
+  "pinaybeauty.ph", "pinayspotted20", "pinayspotted20", "aliyah8533"
 ];
 
 // Shuffle helper
