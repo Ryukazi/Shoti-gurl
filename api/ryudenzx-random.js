@@ -4,57 +4,78 @@ const usernames = [
   "vix.max", "nepalibaddies2", "cewekcantikindo", "kripaverse",
   "rina55544", "nepali.modelshub7", "yourmommyy__",
   "mikxu_grgx", "svn9o.__.ww", "hninphyusin2004",
-  "sune_.0", "hvcqi", "mama_diorr", "allesandraniebres","amethystyaoki",
-  "pinaybeauty.ph", "pinayspotted20", "pinayspotted20", "aliyah8533",
-  "hvcqi", "sannymmaa"
+  "sune_.0", "hvcqi", "mama_diorr", "allesandraniebres",
+  "amethystyaoki", "pinaybeauty.ph", "pinayspotted20",
+  "aliyah8533", "sannymmaa"
 ];
 
-// Shuffle helper
-function shuffleArray(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
 }
 
 async function fetchRandomVideo(username) {
   try {
-    const res = await axios.post("https://tikwm.com/api/user/posts", {
-      unique_id: username,
-      count: 20
-    }, { headers: { "Content-Type": "application/json" } });
+    const res = await axios.post(
+      "https://tikwm.com/api/user/posts",
+      {
+        unique_id: username,
+        count: 20
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "Mozilla/5.0",
+          "Referer": "https://tikwm.com/"
+        },
+        timeout: 8000
+      }
+    );
 
     const videos = res.data?.data?.videos;
-    if (!videos || !videos.length) return null;
+    if (!videos?.length) return null;
 
-    const validVideos = videos.filter(v => v.play);
-    if (!validVideos.length) return null;
+    const valid = videos.filter(v => v.play);
+    if (!valid.length) return null;
 
-    return validVideos[Math.floor(Math.random() * validVideos.length)].play;
+    const v = valid[Math.floor(Math.random() * valid.length)];
+
+    return {
+      play: v.play,
+      cover: v.cover,
+      title: v.title || "",
+      author: v.author?.nickname || username
+    };
+
   } catch (err) {
-    console.error(`❌ Failed for ${username}:`, err.response?.data || err.message);
     return null;
   }
 }
 
 export default async function handler(req, res) {
-  const shuffled = shuffleArray([...usernames]);
+  try {
+    const shuffled = shuffle([...new Set(usernames)]);
 
-  for (const username of shuffled) {
-    const videoUrl = await fetchRandomVideo(username);
-    if (videoUrl) {
-      try {
-        const response = await axios.get(videoUrl, { responseType: "arraybuffer" });
-        const contentType = response.headers["content-type"] || "video/mp4";
+    for (const user of shuffled) {
+      const video = await fetchRandomVideo(user);
 
-        res.setHeader("Content-Type", contentType);
-        return res.send(Buffer.from(response.data));
-      } catch (err) {
-        console.error("❌ Failed to stream video:", err.message);
+      if (video) {
+        return res.status(200).json({
+          status: true,
+          type: "shoti-random",
+          data: video
+        });
       }
     }
-  }
 
-  res.status(404).json({ error: "No valid videos found for any user." });
-}
+    return res.status(404).json({
+      status: false,
+      message: "No videos found"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      status: false,
+      error: err.message
+    });
+  }
+  }
